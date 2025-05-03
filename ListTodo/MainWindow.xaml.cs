@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ListTodo.Models;  // fo using TodoModel private BindingList<TodoModel>;
-using System.ComponentModel;  // fo using BindingList
+using System.ComponentModel;
+using ListTodo.Services;  // fo using BindingList
 
 namespace ListTodo
 {
@@ -23,21 +24,47 @@ namespace ListTodo
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-
-		private BindingList<TodoModel> _todoData;
+		private readonly string PATH = $"{Environment.CurrentDirectory}\\todoDataList.json";   // в проекте/bin/debug
+		private BindingList<TodoModel> _todoDataList;
+		private FileInputOutputServices _fileInputOutputServices;
 		public MainWindow()
 		{
 			InitializeComponent();
 		}
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			_todoData = new BindingList<TodoModel>()
+			_fileInputOutputServices = new FileInputOutputServices(PATH);
+			try
 			{
-				new TodoModel() {Text = "test"},
-				new TodoModel() {Text = "djsad"}
-			};
+				_todoDataList = _fileInputOutputServices.LoadData();
+			}
+			catch (Exception ex)
+			{
 
-			dgListTodo.ItemsSource = _todoData;
+				MessageBox.Show(ex.Message);
+				Close();
+			}
+			dgListTodo.ItemsSource = _todoDataList;
+			_todoDataList.ListChanged += _todoDataList_ListChanged;
+		}
+
+		private void _todoDataList_ListChanged(object sender, ListChangedEventArgs e)   // подписываемся на это событие (какое-либо изменение в DataGrid)
+		{
+
+			if (e.ListChangedType == ListChangedType.ItemAdded || e.ListChangedType == ListChangedType.ItemDeleted || e.ListChangedType == ListChangedType.ItemChanged)
+			{
+				try
+				{
+					_fileInputOutputServices.SaveData(sender as BindingList<TodoModel>);
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message);
+					Close();
+
+				}
+
+			}
 		}
 	}
 }
