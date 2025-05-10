@@ -24,19 +24,20 @@ namespace ListTodo
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly string PATH = $"{Environment.CurrentDirectory}\\todoDataList.json";   // в проекте/bin/debug
+		//private readonly string PATH = $"{Environment.CurrentDirectory}\\todoDataList.json";   // в проекте/bin/debug
+		
 		private BindingList<TodoModel> _todoDataList;
-		private FileInputOutputServices _fileInputOutputServices;
+		//private FileInputOutputServices _fileInputOutputServices;
 		public MainWindow()
 		{
 			InitializeComponent();
 		}
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			_fileInputOutputServices = new FileInputOutputServices(PATH);
+			//_fileInputOutputServices = new FileInputOutputServices(PATH);
 			try
 			{
-				_todoDataList = _fileInputOutputServices.LoadData();
+				//_todoDataList = //_fileInputOutputServices.LoadData();
 			}
 			catch (Exception ex)
 			{
@@ -44,7 +45,7 @@ namespace ListTodo
 				MessageBox.Show(ex.Message);
 				Close();
 			}
-			dgListTodo.ItemsSource = _todoDataList;
+			//dgListTodo.ItemsSource = _todoDataList;
 			_todoDataList.ListChanged += _todoDataList_ListChanged;
 		}
 
@@ -55,7 +56,7 @@ namespace ListTodo
 			{
 				try
 				{
-					_fileInputOutputServices.SaveData(sender as BindingList<TodoModel>);
+					//_fileInputOutputServices.SaveData(sender as BindingList<TodoModel>);
 				}
 				catch (Exception ex)
 				{
